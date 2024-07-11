@@ -36,14 +36,21 @@ async function run() {
             res.send(result)
         })
 
-        // find single service 
-        app.get('/services/:id', async (req, res) => {
+        // find single service with specific data
+        app.get('/order/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const options = {
                 projection: { service_id: 1, title: 1, price: 1, img: 1 },
             };
             const result = await serviceCollection.findOne(query, options)
+            res.send(result)
+        })
+        // find single service 
+        app.get('/service/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await serviceCollection.findOne(query)
             res.send(result)
         })
         // customer order create API
