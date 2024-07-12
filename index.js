@@ -54,7 +54,7 @@ async function run() {
             res.send(result)
         })
         // Add single service
-       app.post('/addServices', async (req, res) => {
+        app.post('/addServices', async (req, res) => {
             const services = req.body;
             if (Array.isArray(services)) {
                 const result = await serviceCollection.insertMany(services);
@@ -68,6 +68,16 @@ async function run() {
         app.post('/bookings', async (req, res) => {
             const booking = req.body;
             const result = await bookingCollection.insertOne(booking)
+            res.send(result)
+        })
+        // single booking find
+        app.get('/bookings', async (req, res) => {
+     
+            let query={};
+            if(req.query.email){
+                query={email:req.query.email}
+            }
+            const result=await bookingCollection.find(query).toArray();
             res.send(result)
         })
         // Send a ping to confirm a successful connection
