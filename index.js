@@ -53,6 +53,17 @@ async function run() {
             const result = await serviceCollection.findOne(query)
             res.send(result)
         })
+        // Add single service
+       app.post('/addServices', async (req, res) => {
+            const services = req.body;
+            if (Array.isArray(services)) {
+                const result = await serviceCollection.insertMany(services);
+                res.send(result);
+            } else {
+                const result = await serviceCollection.insertOne(services);
+                res.send(result);
+            }
+        });
         // customer order create API
         app.post('/bookings', async (req, res) => {
             const booking = req.body;
