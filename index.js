@@ -30,6 +30,7 @@ async function run() {
         const serviceCollection = client.db("carDoctor").collection("services")
         const bookingCollection = client.db("carDoctor").collection("bookings")
         const productCollection = client.db("carDoctor").collection("products")
+        const productOrderCollection = client.db("carDoctor").collection("productsOrders")
 
         app.get('/services', async (req, res) => {
             const cursor = serviceCollection.find();
@@ -111,9 +112,17 @@ async function run() {
             res.send(result)
         })
         // products find api
-        app.get('/products',async(req,res)=>{
+        app.get('/products', async (req, res) => {
             const cursor = productCollection.find();
             const result = await cursor.toArray()
+            res.send(result)
+        })
+        // products single  api
+       
+        app.get('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await productCollection.findOne(query)
             res.send(result)
         })
         // Send a ping to confirm a successful connection
