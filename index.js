@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors')
-
+const jwt = require('jsonwebtoken')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb')
 require('dotenv').config()
 const app = express()
@@ -31,7 +31,12 @@ async function run() {
         const bookingCollection = client.db("carDoctor").collection("bookings")
         const productCollection = client.db("carDoctor").collection("products")
         const productOrderCollection = client.db("carDoctor").collection("productsOrders")
-
+        // create webtoken
+        app.post('/jwt', async (req, res) => {
+            const user = req.body
+            const token = jwt.sign(user, 'secret', { expiresIn: '1h' })
+            res.send(token)
+        })
         app.get('/services', async (req, res) => {
             const cursor = serviceCollection.find();
             const result = await cursor.toArray()
@@ -118,7 +123,7 @@ async function run() {
             res.send(result)
         })
         // products single  api
-       
+
         app.get('/products/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
@@ -126,7 +131,7 @@ async function run() {
             res.send(result)
         })
         // product order api
-        app.post('/productsOrder', async(req,res)=>{
+        app.post('/productsOrder', async (req, res) => {
             const productsOrder = req.body;
             const result = await productOrderCollection.insertOne(productsOrder)
             res.send(result)
@@ -142,8 +147,8 @@ async function run() {
             res.send(result)
         })
 
-         // delete products order
-         app.delete('/orders/:id', async (req, res) => {
+        // delete products order
+        app.delete('/orders/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await productOrderCollection.deleteOne(query);
